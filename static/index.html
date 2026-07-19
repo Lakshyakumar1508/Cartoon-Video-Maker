@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Cartoon Video Generator</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+</head>
+
+<body>
+    <main class="page-container">
+        <section class="hero-section">
+            <span class="badge">LangChain + Hugging Face</span>
+
+            <h1>AI Cartoon Video Generator</h1>
+
+            <p>
+                Enter your cartoon character or story and generate
+                an AI cartoon video.
+            </p>
+        </section>
+
+        <section class="generator-layout">
+
+            <div class="form-card">
+                <h2>Describe Your Cartoon</h2>
+
+                <form id="videoForm">
+
+                    <div class="form-group">
+                        <label for="character">
+                            Character description
+                        </label>
+
+                        <textarea
+                            id="character"
+                            rows="4"
+                            placeholder="Example: Golu is a cute brown monkey with large eyes, wearing a red T-shirt and blue shorts."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="story">
+                            Story or video scene
+                        </label>
+
+                        <textarea
+                            id="story"
+                            rows="6"
+                            placeholder="Example: Golu secretly takes a samosa from a shop, but it is very spicy and he starts jumping around."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="animationStyle">
+                                Animation style
+                            </label>
+
+                            <select id="animationStyle">
+                                <option value="3D Cartoon">
+                                    3D Cartoon
+                                </option>
+
+                                <option value="2D Cartoon">
+                                    2D Cartoon
+                                </option>
+
+                                <option value="Anime">
+                                    Anime
+                                </option>
+
+                                <option value="Clay Animation">
+                                    Clay Animation
+                                </option>
+
+                                <option value="Watercolor Animation">
+                                    Watercolor Animation
+                                </option>
+
+                                <option value="Comic Animation">
+                                    Comic Animation
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="language">
+                                Dialogue language
+                            </label>
+
+                            <select id="language">
+                                <option value="Hindi">Hindi</option>
+                                <option value="English">English</option>
+                                <option value="Hinglish">Hinglish</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="audience">
+                                Target audience
+                            </label>
+
+                            <select id="audience">
+                                <option value="Kids">Kids</option>
+                                <option value="Family">Family</option>
+                                <option value="Teenagers">
+                                    Teenagers
+                                </option>
+                                <option value="General Audience">
+                                    General Audience
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="aspectRatio">
+                                Aspect ratio
+                            </label>
+
+                            <select id="aspectRatio">
+                                <option value="16:9">
+                                    16:9 YouTube
+                                </option>
+
+                                <option value="9:16">
+                                    9:16 Reels
+                                </option>
+
+                                <option value="1:1">
+                                    1:1 Square
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duration">
+                                Duration
+                            </label>
+
+                            <select id="duration">
+                                <option value="10">10 seconds</option>
+                                <option value="15" selected>
+                                    15 seconds
+                                </option>
+                                <option value="20">20 seconds</option>
+                                <option value="30">30 seconds</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    id="includeDialogue"
+                                    checked
+                                >
+
+                                <span>Include dialogue</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        id="generateButton"
+                    >
+                        <span id="buttonText">
+                            Generate Cartoon Video
+                        </span>
+
+                        <span
+                            id="buttonLoader"
+                            class="small-loader hidden"
+                        ></span>
+                    </button>
+                </form>
+
+                <div
+                    id="statusBox"
+                    class="status-box hidden"
+                ></div>
+            </div>
+
+            <div class="result-card">
+                <div
+                    id="emptyResult"
+                    class="empty-result"
+                >
+                    <div class="play-icon">▶</div>
+
+                    <h2>Your video will appear here</h2>
+
+                    <p>
+                        Fill in the form and click Generate Cartoon Video.
+                    </p>
+                </div>
+
+                <div
+                    id="loadingResult"
+                    class="loading-result hidden"
+                >
+                    <div class="loader"></div>
+
+                    <h2>Generating your cartoon</h2>
+
+                    <p>
+                        The AI is writing the prompt and creating
+                        the video.
+                    </p>
+
+                    <p class="loading-note">
+                        Video generation can take some time depending
+                        on the selected model and provider.
+                    </p>
+                </div>
+
+                <div
+                    id="videoResult"
+                    class="video-result hidden"
+                >
+                    <h2>Generated Cartoon Video</h2>
+
+                    <video
+                        id="generatedVideo"
+                        controls
+                        playsinline
+                    ></video>
+
+                    <a
+                        id="downloadButton"
+                        class="download-button"
+                        href="#"
+                        download
+                    >
+                        Download Video
+                    </a>
+
+                    <div class="prompt-section">
+                        <div class="prompt-heading">
+                            <h3>Generated AI Prompt</h3>
+
+                            <button
+                                type="button"
+                                id="copyPromptButton"
+                                class="copy-button"
+                            >
+                                Copy
+                            </button>
+                        </div>
+
+                        <p id="generatedPrompt"></p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
